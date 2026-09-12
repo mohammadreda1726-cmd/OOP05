@@ -125,8 +125,281 @@
             #endregion
 
             #endregion
+            #region Part 02 — Practical
+            #region 1 Object Copying
+            // does not create a new Shipment object. It copies the reference,
+            // so both variables point to the same object.
+            //Shipment shipment1 = new Shipment("SH001", "Laptop", 2.5m, 2800, new DeliveryAddress("cairo","Dr",8));
+            //Shipment shipment2 = shipment1;
+            //Shipment shipment3 = shipment1.CopyShipment();
+            #endregion
+
+            #region 2 Shallow Copy
+            /*
+               • The original and copied Shipment objects must be different objects.
+               • Their DeliveryAddress objects must still reference the same object.
+               • Change the address through the copied shipment and demonstrate that the original shipment's address is also
+                affected.
+             */
+            //Shipment shipment4 = shipment1.ShallowCopy();
+            //shipment4.Destination.City = "Roma";
+
+            #endregion
+
+            #region 3 Deep Copy
+            /*
+               • The Deep Copy must create a new Shipment and a new DeliveryAddress.
+               • Change the address of the copied shipment; the original address must remain unchanged.
+             */
+            //Shipment shipment5 = shipment1.DeepCopy();
+            //shipment5.Destination.City = "Paris";
+            #endregion
+
+            #region 4 Static Field
+            /*
+               • It should keep track of the total number of Shipment objects created.
+               • Every time a shipment is created, increment the counter.
+               • The value must be shared between all shipment objects.
+             */
+            #endregion
+
+            #region 5 Static Constructor
+            /*
+              • Initialize the shipment counter and display a message indicating 
+                that static initialization has happened.
+              • The static constructor must not be called manually.
+                Shipment System Initialized
+             */
+            #endregion
+
+            #region 6 Static Method
+            /*
+              • Return the total number of shipment objects created.
+              • Call the method without creating a Shipment object just to access the method.
+                Total Shipments Created : 3
+             */
+            //Console.WriteLine($"Total Shipments Created : {Shipment.GetTotalShipmentsCreated()}");
+
+            #endregion
+
+            #region 7 Static Class
+            /*
+              • Create a static class named DeliveryUtilities.
+              • Add static methods: PrintSeparator() and PrintSystemTitle().
+              • Use these methods throughout Main() instead of repeatedly writing the same separator/title code.
+             */
+            //DeliveryUtilities.PrintSeparator();
+            //DeliveryUtilities.PrintSystemTitle();
+
+            #endregion
+
+            #region 8 Extension Methods
+            /*
+            • Create a static class named ShipmentExtensions.
+            • Add string GetSummary(this Shipment shipment).
+            • The summary must contain Tracking Code, Shipment Type, Weight, and Tracking Status.
+            SH001 | Standard | 3 KG | In Transit
+            • Add bool IsDelivered(this Shipment shipment).
+            • Return true only when the tracking status is Delivered.
+            shipment.GetSummary();
+            shipment.IsDelivered();
+             */
+            //shipment.GetSummary();
+            //shipment.IsDelivered();
+            #endregion
+
+            #region 9 Partial Shipment Class 
+            /*
+            • Convert the existing Shipment class into a partial class.
+            • Split it into at least two files: Shipment.cs and Shipment.Tracking.cs.
+            • Shipment.cs should contain the main properties, constructor, EstimatedCost, PrintShipment(), and other existing
+            functionality.
+            • Shipment.Tracking.cs should contain tracking-related members such as tracking status, GetTrackingStatus(), and
+            UpdateTrackingStatus().
+            • The program must continue to work exactly as before.
+             */
+
+            #endregion
+
+            #region 10 Partial Method
+            /*
+            • Declare a partial method: partial void OnTrackingStatusChanged(string newStatus);
+            • Call it from UpdateTrackingStatus().
+            • Implement the partial method in another part of the Shipment class.
+            • Display a message when the tracking status changes.
+            Tracking status changed to: Out For Delivery
+             */
+            #endregion
+            #endregion
+           
+            
+            Console.WriteLine("Smart Delivery Management System");
+            
+
+            Console.WriteLine("Shipment System Initialized");
+
+            Console.WriteLine("Creating Shipments...");
+   
+            StandardShipment standard = new StandardShipment(
+                "SH001",
+                "Standard Shipment",
+                3,
+                50,
+                new DeliveryAddress("Cairo", "Nasr City", 10)
+            );
+
+            ExpressShipment express = new ExpressShipment(
+                "SH002",
+                "Express Shipment",
+                2,
+                80,
+                new DeliveryAddress("Giza", "Dokki", 20)
+            );
+
+            InternationalShipment international = new InternationalShipment(
+                "SH003",
+                "International Shipment",
+                8,
+                150,
+                new DeliveryAddress("Alexandria", "Miami", 30)
+            );
+
+            Console.WriteLine("Standard Shipment Created");
+            Console.WriteLine("Express Shipment Created");
+            Console.WriteLine("International Shipment Created");
+
+            Console.WriteLine(
+                $"Total Shipments Created : {Shipment.GetTotalShipmentsCreated()}");
 
 
+            Console.WriteLine("Object Copying");
+           
+            
+            Shipment original = standard;
+
+            Shipment assigned = original;
+
+            Console.WriteLine($"Original Shipment : {original.TrackingCode}");
+            Console.WriteLine($"Assigned Shipment : {assigned.TrackingCode}");
+
+            // Both variables point to the SAME object
+            Console.WriteLine($"Same Object : {ReferenceEquals(original, assigned)}");
+
+            Console.WriteLine("------------------------------------------");
+            Console.WriteLine("Shallow Copy");
+            Console.WriteLine("------------------------------------------");
+
+            // MemberwiseClone creates a new Shipment object,
+            // but reference-type members are still shared.
+            Shipment shallowCopy = original.CreateShallowCopy();
+
+            Console.WriteLine(
+                $"Original Shipment Address : {original.Destination.City}");
+
+            Console.WriteLine(
+                $"Copied Shipment Address : {shallowCopy.Destination.City}");
+
+            Console.WriteLine("Changing copied shipment address...");
+
+            shallowCopy.Destination = new DeliveryAddress(
+                "Giza",
+                "Dokki",
+                25
+            );
+
+            Console.WriteLine(
+                $"Original Shipment Address : {original.Destination.City}");
+
+            Console.WriteLine(
+                $"Copied Shipment Address : {shallowCopy.Destination.City}");
+
+            Console.WriteLine(
+                $"Same DeliveryAddress Object : " +
+                $"{original.Destination.Equals(shallowCopy.Destination)}");
+
+            Console.WriteLine("------------------------------------------");
+            Console.WriteLine("Deep Copy");
+            Console.WriteLine("------------------------------------------");
+
+            // Create another original shipment for the deep-copy demo
+            StandardShipment deepOriginal = new StandardShipment(
+                "SH004",
+                "Deep Copy Test",
+                3,
+                50,
+                new DeliveryAddress("Cairo", "Maadi", 15)
+            );
+
+            Shipment deepCopy = deepOriginal.DeepCopy();
+
+            Console.WriteLine(
+                $"Original Shipment Address : {deepOriginal.Destination.City}");
+
+            Console.WriteLine(
+                $"Copied Shipment Address : {deepCopy.Destination.City}");
+
+            Console.WriteLine("Changing copied shipment address...");
+
+            deepCopy.Destination = new DeliveryAddress(
+                "Giza",
+                "Dokki",
+                25
+            );
+
+            Console.WriteLine(
+                $"Original Shipment Address : {deepOriginal.Destination.City}");
+
+            Console.WriteLine(
+                $"Copied Shipment Address : {deepCopy.Destination.City}");
+
+            Console.WriteLine(
+                $"Same DeliveryAddress Object : " +
+                $"{deepOriginal.Destination.Equals(deepCopy.Destination)}");
+
+          
+            Console.WriteLine("Extension Methods");
+            
+            // Set tracking status
+            standard.TrackingStatus = "In Transit";
+            express.TrackingStatus = "Out For Delivery";
+            international.TrackingStatus = "Delivered";
+
+            Console.WriteLine(standard.GetSummary());
+            Console.WriteLine(express.GetSummary());
+            Console.WriteLine(international.GetSummary());
+
+            Console.WriteLine(
+                $"SH001 Is Delivered : {standard.IsDelivered()}");
+
+            Console.WriteLine(
+                $"SH003 Is Delivered : {international.IsDelivered()}");
+
+
+            Console.WriteLine("Tracking Status");
+            
+            standard.UpdateTrackingStatus("Out For Delivery");
+
+           
+            Console.WriteLine("Static Utilities");
+          
+            Console.WriteLine("Delivery Center");
+           
+            Console.WriteLine(
+                $"Total Shipments Created : " +
+                $"{Shipment.GetTotalShipmentsCreated()}");
+
+            // Example of DeliveryUtilities
+            DeliveryUtilities.PrintShipmentCost(standard);
+            DeliveryUtilities.PrintShipmentCost(express);
+            DeliveryUtilities.PrintShipmentCost(international);
+   
+            Console.WriteLine("Partial Method");
+           
+            // This method internally triggers the partial method.
+            international.UpdateTrackingStatus("Delivered");
+           
+            Console.WriteLine("Assignment Completed");
+           
 
         }
     }
